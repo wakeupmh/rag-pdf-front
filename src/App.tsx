@@ -76,6 +76,10 @@ function App() {
         placeholder: "Insira seu usuário",
       },
     },
+    password: {
+      label: "Senha",
+      placeholder: "Insira sua senha",
+    }
   };
 
   return (
