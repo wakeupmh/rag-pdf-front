@@ -1,39 +1,176 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
-
-const client = generateClient<Schema>();
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Chat from "./Chat";
+import { useState } from "react";
+import { TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LoadingSpinner from "./Spinner";
+import IconButton from "@mui/material/IconButton";
+import SendIcon from "@mui/icons-material/Send";
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const baseUrl =
+    "https://w2r678gxwd.execute-api.us-east-1.amazonaws.com/prod/";
+  const [history, setHistory]: any = useState([]);
+  const [question, setQuestion] = useState("");
+  const [spinner, setSpinner] = useState(false);
+  const [sessionId, setSessionId] = useState(undefined);
 
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
+  const handleSendQuestion = () => {
+    setSpinner(true);
 
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
+    fetch(baseUrl + "docs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-amzn-trace-id": "Root=1-5f107f3e-8b9c3b3b5f1b9b1b1b1b1b1b",
+      },
+      body: JSON.stringify({
+        requestSessionId: sessionId,
+        question: question,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSpinner(false);
+        setSessionId(data.sessionId);
+        setHistory([
+          ...history,
+          {
+            question: question,
+            response: data.response,
+            citation: data.citation,
+          },
+        ]);
+      })
+      .catch((err) => {
+        console.error(err);
+        setSpinner(false);
+        setHistory([
+          ...history,
+          {
+            question: question,
+            response:
+              "Error generating an answer. Please check your browser console, WAF configuration, Bedrock model access, and Lambda logs for debugging the error.",
+            citation: undefined,
+          },
+        ]);
+      });
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      handleSendQuestion();
+    }
+  };
+
+  const onClearHistory = () => setHistory([]);
 
   return (
-    <main>
-      <h1>My todos</h1>
-      <button onClick={createTodo}>+ new</button>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
-        ))}
-      </ul>
-      <div>
-        🥳 App successfully hosted. Try creating a new todo.
-        <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates">
-          Review next step of this tutorial.
-        </a>
-      </div>
-    </main>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: "30px",
+        backgroundColor: "#f0f0f0",
+      }}
+    >
+      <Paper
+        sx={{
+          padding: 8,
+          maxWidth: 900,
+        }}
+      >
+        <Typography variant="h5" sx={{ textAlign: "center" }}>
+          Juridico Q&A
+        </Typography>
+        <br></br>
+        <br></br>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingBottom: "10px",
+              paddingTop: "20px",
+            }}
+          >
+            <Typography variant="overline">
+              Pergunte aos seus documentos:
+            </Typography>
+          </Box>
+          <Chat history={history} />
+          <br></br>
+          {spinner ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px",
+              }}
+            >
+              <LoadingSpinner />
+            </Box>
+          ) : (
+            <br></br>
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingBottom: "20px",
+            paddingTop: "20px",
+          }}
+        >
+          <TextField
+            disabled={spinner || !baseUrl}
+            variant="standard"
+            label="Escreva sua questão aqui"
+            value={question}
+            onChange={(e) => setQuestion(e.target?.value)}
+            onKeyDown={handleKeyDown}
+            sx={{ width: "95%" }}
+          />
+          <IconButton
+            disabled={spinner || !baseUrl}
+            onClick={handleSendQuestion}
+            color="primary"
+          >
+            <SendIcon />
+          </IconButton>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingBottom: "20px",
+            paddingTop: "20px",
+          }}
+        >
+          <Button
+            disabled={history.length === 0}
+            startIcon={<DeleteIcon />}
+            onClick={onClearHistory}
+          >
+            Limpar histórico
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
   );
 }
 
