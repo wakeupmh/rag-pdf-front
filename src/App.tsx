@@ -70,8 +70,8 @@ function App() {
   const onClearHistory = () => setHistory([]);
 
   return (
-    // <Authenticator hideSignUp>
-    //   {({ signOut }) => (
+    <Authenticator hideSignUp>
+      {({ signOut }) => (
         <Box
           sx={{
             display: "flex",
@@ -182,12 +182,12 @@ function App() {
                 paddingTop: "20px",
               }}
             >
-              {/* <button onClick={signOut}>Deslogar</button> */}
+              <button onClick={signOut}>Deslogar</button>
             </Box>
           </Paper>
         </Box>
-    //   )}
-    // </Authenticator>
+      )}
+    </Authenticator>
   );
 }
 
