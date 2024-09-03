@@ -8,6 +8,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingSpinner from "./Spinner";
 import IconButton from "@mui/material/IconButton";
 import SendIcon from "@mui/icons-material/Send";
+import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
 
 function App() {
   const baseUrl =
@@ -68,109 +70,114 @@ function App() {
   const onClearHistory = () => setHistory([]);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: "30px",
-        backgroundColor: "#f0f0f0",
-      }}
-    >
-      <Paper
-        sx={{
-          padding: 8,
-          maxWidth: 900,
-        }}
-      >
-        <Typography variant="h5" sx={{ textAlign: "center" }}>
-          Juridico Q&A
-        </Typography>
-        <br></br>
-        <br></br>
+    <Authenticator>
+      {({ signOut }) => (
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
             justifyContent: "center",
-            height: "100%",
+            alignItems: "center",
+            minHeight: "100vh",
+            padding: "30px",
           }}
         >
-          <Box
+          <Paper
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingBottom: "10px",
-              paddingTop: "20px",
+              padding: 8,
+              maxWidth: '80%',
             }}
           >
-            <Typography variant="overline">
-              Pergunte aos seus documentos:
+            <Typography variant="h5" sx={{ textAlign: "center" }}>
+              Juridico Q&A
             </Typography>
-          </Box>
-          <Chat history={history} />
-          <br></br>
-          {spinner ? (
+            <br></br>
+            <br></br>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                height: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "10px",
+                  paddingTop: "20px",
+                }}
+              >
+                <Typography variant="overline">
+                  Pergunte aos seus documentos:
+                </Typography>
+              </Box>
+              <Chat history={history} />
+              <br></br>
+              {spinner ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "20px",
+                  }}
+                >
+                  <LoadingSpinner />
+                </Box>
+              ) : (
+                <br></br>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "20px",
+                paddingTop: "20px",
+              }}
+            >
+              <TextField
+                disabled={spinner || !baseUrl}
+                variant="standard"
+                label="Escreva sua questão aqui"
+                value={question}
+                onChange={(e) => setQuestion(e.target?.value)}
+                onKeyDown={handleKeyDown}
+                sx={{ width: "95%" }}
+              />
+              <IconButton
+                disabled={spinner || !baseUrl}
+                onClick={handleSendQuestion}
+                color="primary"
+              >
+                <SendIcon />
+              </IconButton>
+            </Box>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                padding: "20px",
+                alignItems: "center",
+                paddingBottom: "20px",
+                paddingTop: "20px",
               }}
             >
-              <LoadingSpinner />
+              <Button
+                disabled={history.length === 0}
+                startIcon={<DeleteIcon />}
+                onClick={onClearHistory}
+              >
+                Limpar histórico
+              </Button>
+              <br></br>
+              <button onClick={signOut}>Deslogar</button>
             </Box>
-          ) : (
-            <br></br>
-          )}
+          </Paper>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingBottom: "20px",
-            paddingTop: "20px",
-          }}
-        >
-          <TextField
-            disabled={spinner || !baseUrl}
-            variant="standard"
-            label="Escreva sua questão aqui"
-            value={question}
-            onChange={(e) => setQuestion(e.target?.value)}
-            onKeyDown={handleKeyDown}
-            sx={{ width: "95%" }}
-          />
-          <IconButton
-            disabled={spinner || !baseUrl}
-            onClick={handleSendQuestion}
-            color="primary"
-          >
-            <SendIcon />
-          </IconButton>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingBottom: "20px",
-            paddingTop: "20px",
-          }}
-        >
-          <Button
-            disabled={history.length === 0}
-            startIcon={<DeleteIcon />}
-            onClick={onClearHistory}
-          >
-            Limpar histórico
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+      )}
+    </Authenticator>
   );
 }
 
