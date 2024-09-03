@@ -70,7 +70,7 @@ function App() {
   const onClearHistory = () => setHistory([]);
 
   return (
-    <Authenticator>
+    <Authenticator hideSignUp={true}>
       {({ signOut }) => (
         <Box
           sx={{
@@ -84,7 +84,7 @@ function App() {
           <Paper
             sx={{
               padding: 8,
-              maxWidth: '80%',
+              maxWidth: "80%",
             }}
           >
             <Typography variant="h5" sx={{ textAlign: "center" }}>
