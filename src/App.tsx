@@ -69,21 +69,8 @@ function App() {
 
   const onClearHistory = () => setHistory([]);
 
-  const formFields = {
-    signIn: {
-      username: {
-        label: "Usuário",
-        placeholder: "Insira seu usuário",
-      },
-    },
-    password: {
-      label: "Senha",
-      placeholder: "Insira sua senha",
-    }
-  };
-
   return (
-    <Authenticator hideSignUp formFields={formFields}>
+    <Authenticator hideSignUp>
       {({ signOut }) => (
         <Box
           sx={{
