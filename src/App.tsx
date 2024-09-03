@@ -13,7 +13,7 @@ import "@aws-amplify/ui-react/styles.css";
 
 function App() {
   const baseUrl =
-    "https://w2r678gxwd.execute-api.us-east-1.amazonaws.com/prod/";
+    "https://3mf3z2ofb3.execute-api.us-east-1.amazonaws.com/prod/";
   const [history, setHistory]: any = useState([]);
   const [question, setQuestion] = useState("");
   const [spinner, setSpinner] = useState(false);
