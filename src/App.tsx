@@ -70,8 +70,8 @@ function App() {
   const onClearHistory = () => setHistory([]);
 
   return (
-    <Authenticator hideSignUp>
-      {({ signOut }) => (
+    // <Authenticator hideSignUp>
+    //   {({ signOut }) => (
         <Box
           sx={{
             display: "flex",
@@ -84,7 +84,8 @@ function App() {
           <Paper
             sx={{
               padding: 8,
-              maxWidth: "80%",
+              maxWidth: "100%",
+              width: "50%",
             }}
           >
             <Typography variant="h5" sx={{ textAlign: "center" }}>
@@ -171,13 +172,22 @@ function App() {
               >
                 Limpar histórico
               </Button>
-              <br></br>
-              <button onClick={signOut}>Deslogar</button>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingBottom: "20px",
+                paddingTop: "20px",
+              }}
+            >
+              {/* <button onClick={signOut}>Deslogar</button> */}
             </Box>
           </Paper>
         </Box>
-      )}
-    </Authenticator>
+    //   )}
+    // </Authenticator>
   );
 }
 
