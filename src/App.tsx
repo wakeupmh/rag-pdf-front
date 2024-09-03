@@ -84,8 +84,7 @@ function App() {
           <Paper
             sx={{
               padding: 8,
-              maxWidth: "100%",
-              width: "50%",
+              width: "1000px",
             }}
           >
             <Typography variant="h5" sx={{ textAlign: "center" }}>
