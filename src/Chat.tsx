@@ -5,17 +5,17 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
-function Chat(props) {
+function Chat(props: any) {
   const history = props.history;
 
   const boxRef = useRef(null);
 
   useEffect(() => {
     if (boxRef.current) {
-      boxRef.current.scrollTop = boxRef.current.scrollHeight;
+      (boxRef.current as HTMLElement).scrollTop = (boxRef.current as HTMLElement).scrollHeight;
     }
   }, [history]);
 
@@ -31,7 +31,7 @@ function Chat(props) {
     >
       {history?.length > 0 ? (
         <Stack spacing={3}>
-          {history?.map((msg) => (
+          {history?.map((msg: any) => (
             <Box sx={{ padding: "8px" }} key = {msg}>
               <Box sx={{ paddingBottom: "8px" }}>
                 <Card
